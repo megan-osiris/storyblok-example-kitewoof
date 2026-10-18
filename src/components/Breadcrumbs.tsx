@@ -16,7 +16,8 @@ function toLabel(segment: string): string {
 
 function buildCrumbs(path: string): Crumb[] {
   const segments = path.split('/').filter(Boolean);
-  const crumbs: Crumb[] = [{ label: 'Home', to: '/' }];
+  if (segments.length === 0) return [];
+  const crumbs: Crumb[] = [];
   let current = '';
   for (const segment of segments) {
     current += `/${segment}`;
@@ -25,9 +26,27 @@ function buildCrumbs(path: string): Crumb[] {
   return crumbs;
 }
 
+function ChevronIcon() {
+  return (
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M9 6l6 6-6 6" />
+    </svg>
+  );
+}
+
 export function Breadcrumbs({ path }: Props) {
   const crumbs = buildCrumbs(path);
-  if (crumbs.length <= 1) return null;
+  if (crumbs.length === 0) return null;
 
   return (
     <nav className="breadcrumbs" aria-label="Breadcrumb">
@@ -35,13 +54,21 @@ export function Breadcrumbs({ path }: Props) {
         {crumbs.map((crumb, index) => {
           const isLast = index === crumbs.length - 1;
           return (
-            <li key={crumb.to}>
-              {isLast ? (
-                <span aria-current="page">{crumb.label}</span>
-              ) : (
-                <Link to={crumb.to}>{crumb.label}</Link>
+            <li key={crumb.to} className="breadcrumbs__item">
+              {index > 0 && (
+                <span className="breadcrumbs__sep">
+                  <ChevronIcon />
+                </span>
               )}
-              {!isLast && <span className="breadcrumbs__sep" aria-hidden="true">/</span>}
+              {isLast ? (
+                <span aria-current="page" className="breadcrumbs__current">
+                  {crumb.label}
+                </span>
+              ) : (
+                <Link to={crumb.to} className="breadcrumbs__link">
+                  {crumb.label}
+                </Link>
+              )}
             </li>
           );
         })}

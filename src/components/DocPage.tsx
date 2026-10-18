@@ -18,8 +18,14 @@ function renderSection(section: Section) {
 export function DocPage({ page, path }: Props) {
   return (
     <article className="doc-page">
-      <Breadcrumbs path={path} />
-      <PageHeader title={page.title} description={page.description} />
+      <div className="doc-page__intro">
+        <Breadcrumbs path={path} />
+        <PageHeader
+          title={page.title}
+          description={page.description}
+          meta={page.meta}
+        />
+      </div>
       <div className="doc-page__body">{page.body.map(renderSection)}</div>
     </article>
   );

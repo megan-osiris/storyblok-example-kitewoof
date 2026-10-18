@@ -1,43 +1,68 @@
-export type RichTextSection = {
-  component: 'rich_text';
+export type InlineSpanKind = 'text' | 'link' | 'code' | 'strong';
+
+export type InlineSource = string;
+
+export type TextParagraphBlock = { kind: 'p'; text: InlineSource };
+export type TextListBlock = { kind: 'ul' | 'ol'; items: InlineSource[] };
+export type TextBlock = TextParagraphBlock | TextListBlock;
+
+export type TextSectionSection = {
+  component: 'text_section';
   _uid: string;
-  html: string;
+  anchor?: string;
+  heading: string;
+  blocks: TextBlock[];
 };
 
-export type CalloutVariant = 'note' | 'tip' | 'warning';
+export type CalloutVariant = 'note' | 'warning';
 
 export type CalloutSection = {
   component: 'callout';
   _uid: string;
   variant: CalloutVariant;
-  title?: string;
-  html: string;
+  title: string;
+  body: InlineSource;
+};
+
+export type CodeLanguage =
+  | 'bash'
+  | 'shell'
+  | 'javascript'
+  | 'typescript'
+  | 'python'
+  | 'json'
+  | 'text';
+
+export type CodeBlockSection = {
+  component: 'code_block';
+  _uid: string;
+  language: CodeLanguage;
+  filename: string;
+  code: string;
 };
 
 export type DataTableSection = {
   component: 'data_table';
   _uid: string;
+  columns: string[];
+  rows: InlineSource[][];
   caption?: string;
-  headers: string[];
-  rows: string[][];
-};
-
-export type CodeBlockSection = {
-  component: 'code_block';
-  _uid: string;
-  language: string;
-  filename?: string;
-  code: string;
 };
 
 export type Section =
-  | RichTextSection
+  | TextSectionSection
   | CalloutSection
-  | DataTableSection
-  | CodeBlockSection;
+  | CodeBlockSection
+  | DataTableSection;
+
+export type PageMeta = {
+  readTime?: string;
+  updated?: string;
+};
 
 export type Page = {
   title: string;
   description: string;
+  meta?: PageMeta;
   body: Section[];
 };

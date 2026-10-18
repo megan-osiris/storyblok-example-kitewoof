@@ -1,4 +1,5 @@
 import type { DataTableSection } from '../../content/types';
+import { Inline } from './inline';
 
 type Props = { section: DataTableSection };
 
@@ -9,9 +10,9 @@ export function DataTable({ section }: Props) {
         <table>
           <thead>
             <tr>
-              {section.headers.map((header) => (
-                <th key={header} scope="col">
-                  {header}
+              {section.columns.map((column) => (
+                <th key={column} scope="col">
+                  {column}
                 </th>
               ))}
             </tr>
@@ -20,7 +21,12 @@ export function DataTable({ section }: Props) {
             {section.rows.map((row, rowIndex) => (
               <tr key={rowIndex}>
                 {row.map((cell, cellIndex) => (
-                  <td key={cellIndex}>{cell}</td>
+                  <td
+                    key={cellIndex}
+                    className={cellIndex === 0 ? 'data-table__cell--nowrap' : undefined}
+                  >
+                    <Inline source={cell} />
+                  </td>
                 ))}
               </tr>
             ))}

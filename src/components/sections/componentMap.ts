@@ -1,17 +1,17 @@
 import type { ComponentType } from 'react';
 import type { Section } from '../../content/types';
-import { RichText } from './RichText';
+import { TextSection } from './TextSection';
 import { Callout } from './Callout';
-import { DataTable } from './DataTable';
 import { CodeBlock } from './CodeBlock';
+import { DataTable } from './DataTable';
 
 type SectionComponent<S extends Section> = ComponentType<{ section: S }>;
 
 export const componentMap: {
   [S in Section as S['component']]: SectionComponent<S>;
 } = {
-  rich_text: RichText,
+  text_section: TextSection,
   callout: Callout,
-  data_table: DataTable,
   code_block: CodeBlock,
+  data_table: DataTable,
 };

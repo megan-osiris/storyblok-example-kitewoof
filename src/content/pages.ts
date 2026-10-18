@@ -4,159 +4,233 @@ export const pages: Record<string, Page> = {
   '': {
     title: 'Welcome to Kitewoof',
     description:
-      'Kitewoof is a fictional API used to teach documentation patterns. Start here to see how the site is organized.',
+      'Kitewoof is a fictional events-and-webhooks API, used here to teach documentation patterns. The guide starts with the Quickstart.',
     body: [
       {
-        component: 'rich_text',
-        _uid: 'home-intro',
-        html: `
-          <p>This site is a learning sandbox. Every page you see is rendered from a single catch-all route that looks up its data by URL path. There is no CMS yet.</p>
-          <h2>Where to go next</h2>
-          <ul>
-            <li><a href="/docs/getting-started/install">Install the Kitewoof CLI</a></li>
-            <li><a href="/docs/getting-started/authentication">Authenticate your first request</a></li>
-          </ul>
-        `,
+        component: 'text_section',
+        _uid: 'home-start',
+        anchor: 'start-here',
+        heading: 'Start here',
+        blocks: [
+          {
+            kind: 'p',
+            text: 'Pick a path from the sidebar, or jump straight into the [Quickstart](/docs/get-started/quickstart) to send your first event. The sample content is lifted from the Claude Design project so you can compare the rendered React output against the design side by side.',
+          },
+          {
+            kind: 'ul',
+            items: [
+              '[Quickstart](/docs/get-started/quickstart) — create a key, install the SDK, send an event',
+              '[Introduction](/docs/get-started/introduction) — what Kitewoof is',
+              '[Authentication](/docs/get-started/authentication) — API keys and token scopes',
+            ],
+          },
+        ],
       },
       {
         component: 'callout',
         _uid: 'home-note',
         variant: 'note',
-        title: 'This is a static demo',
-        html: '<p>In a later phase this content lives in Storyblok. For now it is a plain data file in <code>src/content/pages.ts</code>.</p>',
+        title: 'Static demo',
+        body: 'This phase has no CMS. Pages live in `src/content/pages.ts`. Phase 2 swaps this for Storyblok without changing the component tree.',
       },
     ],
   },
 
-  'docs/getting-started/install': {
-    title: 'Install the Kitewoof CLI',
+  'docs/get-started/introduction': {
+    title: 'Introduction',
     description:
-      'The command-line interface is the fastest way to try Kitewoof. Install it with npm and verify the version.',
+      'What Kitewoof is, who it is for, and how the pieces fit together.',
+    meta: { readTime: '2 min read', updated: 'Updated Oct 12, 2026' },
     body: [
       {
-        component: 'rich_text',
-        _uid: 'install-intro',
-        html: `
-          <h2>Prerequisites</h2>
-          <p>You need a recent version of Node.js and npm. Older versions may install the CLI but fail at run time.</p>
-        `,
-      },
-      {
-        component: 'data_table',
-        _uid: 'install-table',
-        caption: 'Supported runtimes',
-        headers: ['Tool', 'Minimum version', 'Recommended'],
-        rows: [
-          ['Node.js', '20.19', '22 LTS'],
-          ['npm', '10', '10 or newer'],
-          ['Git', '2.30', 'Latest'],
+        component: 'text_section',
+        _uid: 'intro-what',
+        anchor: 'what-is-kitewoof',
+        heading: 'What is Kitewoof?',
+        blocks: [
+          {
+            kind: 'p',
+            text: 'Kitewoof is an events-and-webhooks API. Your backend publishes events; Kitewoof delivers them to any number of subscribers with retries and signature verification. The [Quickstart](/docs/get-started/quickstart) is the fastest way to see it in action.',
+          },
         ],
       },
-      {
-        component: 'rich_text',
-        _uid: 'install-steps',
-        html: `
-          <h2>Install the package</h2>
-          <p>Install the CLI globally so the <code>kitewoof</code> binary is on your path.</p>
-        `,
-      },
-      {
-        component: 'code_block',
-        _uid: 'install-cmd',
-        language: 'bash',
-        filename: 'Terminal',
-        code: 'npm install --global @kitewoof/cli@1.0.0',
-      },
-      {
-        component: 'callout',
-        _uid: 'install-tip',
-        variant: 'tip',
-        title: 'Pin the version',
-        html: '<p>Pinning to an exact version keeps your install reproducible when a teammate runs the same command next week.</p>',
-      },
-      {
-        component: 'rich_text',
-        _uid: 'install-verify',
-        html: '<h2>Verify the install</h2><p>Print the version to confirm the binary is wired up.</p>',
-      },
-      {
-        component: 'code_block',
-        _uid: 'install-verify-cmd',
-        language: 'bash',
-        filename: 'Terminal',
-        code: 'kitewoof --version\n# 1.0.0',
-      },
-      {
-        component: 'callout',
-        _uid: 'install-warning',
-        variant: 'warning',
-        title: 'Permission errors on macOS',
-        html: '<p>If a global install fails with <code>EACCES</code>, use a version manager such as <a href="https://github.com/nvm-sh/nvm">nvm</a> instead of fighting the system Node install.</p>',
-      },
     ],
   },
 
-  'docs/getting-started/authentication': {
-    title: 'Authenticate your first request',
+  'docs/get-started/authentication': {
+    title: 'Authentication',
     description:
-      'Kitewoof uses short-lived bearer tokens. This page shows how to request a token and attach it to an API call.',
+      'API keys, environment scoping, and when to use publishable tokens instead.',
+    meta: { readTime: '3 min read', updated: 'Updated Oct 12, 2026' },
     body: [
       {
-        component: 'rich_text',
-        _uid: 'auth-intro',
-        html: `
-          <h2>How tokens work</h2>
-          <p>Every Kitewoof call must include a bearer token in the <code>Authorization</code> header. Tokens expire after one hour. You exchange a long-lived API key for a token with the <code>auth</code> command.</p>
-        `,
-      },
-      {
-        component: 'callout',
-        _uid: 'auth-note',
-        variant: 'note',
-        title: 'Keep your API key secret',
-        html: '<p>Store your API key in an environment variable, not in source control. The examples below read <code>KITEWOOF_API_KEY</code> from the environment.</p>',
-      },
-      {
-        component: 'rich_text',
-        _uid: 'auth-step-1',
-        html: '<h2>Request a token</h2><p>Call the auth endpoint with your API key. The CLI handles the request for you.</p>',
-      },
-      {
-        component: 'code_block',
-        _uid: 'auth-step-1-cmd',
-        language: 'bash',
-        filename: 'Terminal',
-        code: 'export KITEWOOF_API_KEY="kw_live_••••••••"\nkitewoof auth get-token',
-      },
-      {
-        component: 'rich_text',
-        _uid: 'auth-step-2',
-        html: '<h2>Use the token</h2><p>Attach the token to any call. Replace <code>$TOKEN</code> with the value from the previous step.</p>',
-      },
-      {
-        component: 'code_block',
-        _uid: 'auth-step-2-cmd',
-        language: 'bash',
-        filename: 'Terminal',
-        code: 'curl https://api.kitewoof.dev/v1/kites \\\n  -H "Authorization: Bearer $TOKEN"',
-      },
-      {
-        component: 'data_table',
-        _uid: 'auth-errors',
-        caption: 'Common authentication errors',
-        headers: ['Status', 'Meaning', 'Fix'],
-        rows: [
-          ['401', 'Missing or expired token', 'Request a fresh token with the auth command'],
-          ['403', 'Token lacks the needed scope', 'Add the scope to the API key in the dashboard'],
-          ['429', 'Too many token requests', 'Cache the token for its full one-hour lifetime'],
+        component: 'text_section',
+        _uid: 'auth-keys',
+        anchor: 'keys',
+        heading: 'Keys',
+        blocks: [
+          {
+            kind: 'p',
+            text: 'Keys that start with `kw_test_` reach test channels only. Live keys start with `kw_live_` and can publish to every channel in your workspace, so keep them on the server.',
+          },
         ],
       },
       {
         component: 'callout',
         _uid: 'auth-warning',
         variant: 'warning',
-        title: 'Rotate leaked keys immediately',
-        html: '<p>If you accidentally commit an API key, revoke it in the dashboard before you push a cleanup commit. A rewritten history does not un-publish a key.</p>',
+        title: 'Never commit a live key',
+        body: 'Rotate the key in the dashboard before you push a cleanup commit — a rewritten history does not un-publish a key.',
+      },
+    ],
+  },
+
+  'docs/get-started/quickstart': {
+    title: 'Quickstart',
+    description:
+      'Create an API key, install the Node.js SDK, and send your first event to a Kitewoof channel.',
+    meta: { readTime: '5 min read', updated: 'Updated Oct 12, 2026' },
+    body: [
+      {
+        component: 'text_section',
+        _uid: 'b1',
+        anchor: 'before-you-begin',
+        heading: 'Before you begin',
+        blocks: [
+          { kind: 'p', text: 'This guide takes you from a new account to a delivered event. You will need:' },
+          {
+            kind: 'ul',
+            items: [
+              'A Kitewoof account. The free **Developer** plan is enough.',
+              'Node.js 18 or later, and npm.',
+              'A channel to publish to. New workspaces include one named `default`.',
+            ],
+          },
+        ],
+      },
+      {
+        component: 'callout',
+        _uid: 'b2',
+        variant: 'note',
+        title: 'Test keys and live keys',
+        body: 'Keys that start with `kw_test_` only reach test channels and never trigger real deliveries. Use a test key while you follow this guide.',
+      },
+      {
+        component: 'text_section',
+        _uid: 'b3',
+        anchor: 'create-an-api-key',
+        heading: 'Create an API key',
+        blocks: [
+          {
+            kind: 'ol',
+            items: [
+              'Open the [Dashboard](/docs/dashboard) and go to **Settings → API keys**.',
+              'Select **Create key**, give it a name, and choose the **Test** environment.',
+              'Copy the key and save it as an environment variable named `KITEWOOF_API_KEY`.',
+            ],
+          },
+          {
+            kind: 'p',
+            text: 'A key is shown only once. If you lose it, revoke it and create a new one. See [Rotating API keys](/docs/guides/rotating-keys).',
+          },
+        ],
+      },
+      {
+        component: 'text_section',
+        _uid: 'b4',
+        anchor: 'install-the-sdk',
+        heading: 'Install the SDK',
+        blocks: [
+          {
+            kind: 'p',
+            text: 'Install the official Node.js SDK. The [Python](/docs/reference/python-sdk), [Go](/docs/reference/go-sdk), and [Ruby](/docs/reference/ruby-sdk) packages follow the same steps.',
+          },
+        ],
+      },
+      {
+        component: 'code_block',
+        _uid: 'b5',
+        filename: 'Terminal',
+        language: 'bash',
+        code: 'npm install @kitewoof/node\nexport KITEWOOF_API_KEY="kw_test_4eC39HqLyjWDarjtT1zdp7dc"',
+      },
+      {
+        component: 'text_section',
+        _uid: 'b6',
+        anchor: 'send-your-first-event',
+        heading: 'Send your first event',
+        blocks: [
+          {
+            kind: 'p',
+            text: 'Create a file named `send-event.js`. The client reads your key from the environment, then publishes an `order.created` event to the `default` channel.',
+          },
+        ],
+      },
+      {
+        component: 'code_block',
+        _uid: 'b7',
+        filename: 'send-event.js',
+        language: 'javascript',
+        code: `import { Kitewoof } from "@kitewoof/node";
+
+const kw = new Kitewoof({ apiKey: process.env.KITEWOOF_API_KEY });
+
+// Publish an event to the default channel
+const event = await kw.events.create({
+  channel: "default",
+  type: "order.created",
+  data: { orderId: "ord_1042", total: 4999 },
+});
+
+console.log(event.id); // evt_8Fq2LmZt`,
+      },
+      {
+        component: 'text_section',
+        _uid: 'b8',
+        anchor: 'check-the-response',
+        heading: 'Check the response',
+        blocks: [
+          {
+            kind: 'p',
+            text: "Run `node send-event.js`. A successful request returns `201 Created` and the new event object. These are the other status codes you're likely to see while testing:",
+          },
+        ],
+      },
+      {
+        component: 'data_table',
+        _uid: 'b9',
+        caption: 'Common status codes',
+        columns: ['Status', 'Meaning', 'What to do'],
+        rows: [
+          ['`201 Created`', 'The event was accepted and queued for delivery.', 'Nothing. Store `event.id` if you need to look it up later.'],
+          ['`400 Bad Request`', 'The body failed validation, for example a missing `type`.', 'Check the `error.fields` array in the response.'],
+          ['`401 Unauthorized`', 'The API key is missing, revoked, or malformed.', 'Confirm `KITEWOOF_API_KEY` is set in the shell that runs your script.'],
+          ["`404 Not Found`", "The channel doesn't exist in this environment.", 'Create the channel, or pair a test key with a test channel.'],
+          ['`429 Too Many Requests`', 'You sent more than 100 requests per second.', 'Wait for the number of seconds in the `Retry-After` header.'],
+        ],
+      },
+      {
+        component: 'callout',
+        _uid: 'b10',
+        variant: 'warning',
+        title: 'Keep secret keys on the server',
+        body: 'A secret key can publish to every channel in your workspace. Call the API from your backend, and use [publishable tokens](/docs/reference/publishable-tokens) in browsers and mobile apps.',
+      },
+      {
+        component: 'text_section',
+        _uid: 'b11',
+        anchor: 'next-steps',
+        heading: 'Next steps',
+        blocks: [
+          {
+            kind: 'ul',
+            items: [
+              '[Subscribe an endpoint](/docs/core/subscriptions) to receive events as webhooks.',
+              '[Verify webhook signatures](/docs/guides/signatures) before you trust a payload.',
+              'Learn how [retries and backoff](/docs/core/retries) work when a delivery fails.',
+            ],
+          },
+        ],
       },
     ],
   },
