@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Storyblok local SSL (vite-plugin-mkcert) and local env
+*.pem
+.env.local
+.storyblok
