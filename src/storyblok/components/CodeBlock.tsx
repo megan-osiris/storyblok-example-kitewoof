@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import type { CodeBlockSection } from '../../content/types';
-import { LANGUAGE_LABEL, tokenize } from './tokenize';
+import { storyblokEditable } from '@storyblok/react';
+import type { JSX } from 'react';
+import type { CodeBlockBlok } from '../types';
+import { languageLabel, tokenize } from '../tokenize';
 
-type Props = { section: CodeBlockSection };
+type Props = { blok: CodeBlockBlok };
 
 function ShellIcon() {
   return (
@@ -61,31 +63,31 @@ function CopyIcon() {
   );
 }
 
-export function CodeBlock({ section }: Props) {
+export function CodeBlock({ blok }: Props): JSX.Element {
   const [copied, setCopied] = useState(false);
-  const isShell = section.language === 'bash' || section.language === 'shell';
-  const lines = section.code.split('\n');
+  const code = blok.code ?? '';
+  const isShell = blok.language === 'bash' || blok.language === 'shell';
+  const lines = code.split('\n');
+  const gutterWidth = `${String(lines.length).length}ch`;
 
   const handleCopy = () => {
-    void navigator.clipboard?.writeText(section.code);
+    void navigator.clipboard?.writeText(code);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1500);
   };
 
-  const gutterWidth = `${String(lines.length).length}ch`;
-
   return (
-    <figure className="code-block">
+    <figure className="code-block" {...storyblokEditable(blok)}>
       <figcaption className="code-block__caption">
         <span className="code-block__file">
           <span className="code-block__file-icon" aria-hidden="true">
             {isShell ? <ShellIcon /> : <FileIcon />}
           </span>
-          <span className="code-block__filename">{section.filename}</span>
+          <span className="code-block__filename">{blok.filename}</span>
         </span>
         <span className="code-block__controls">
           <span className="code-block__language">
-            {LANGUAGE_LABEL[section.language]}
+            {languageLabel(blok.language)}
           </span>
           <button
             type="button"
@@ -100,27 +102,24 @@ export function CodeBlock({ section }: Props) {
       </figcaption>
       <pre className="code-block__pre">
         <code className="code-block__code">
-          {lines.map((line, index) => {
-            const tokens = tokenize(line, section.language);
-            return (
-              <span key={index} className="code-block__line">
-                <span
-                  className="code-block__gutter"
-                  style={{ width: gutterWidth }}
-                  aria-hidden="true"
-                >
-                  {index + 1}
-                </span>
-                <span className="code-block__content">
-                  {tokens.map((token, tokenIndex) => (
-                    <span key={tokenIndex} style={{ color: token.color }}>
-                      {token.text}
-                    </span>
-                  ))}
-                </span>
+          {lines.map((line, index) => (
+            <span key={index} className="code-block__line">
+              <span
+                className="code-block__gutter"
+                style={{ width: gutterWidth }}
+                aria-hidden="true"
+              >
+                {index + 1}
               </span>
-            );
-          })}
+              <span className="code-block__content">
+                {tokenize(line, blok.language).map((token, tokenIndex) => (
+                  <span key={tokenIndex} style={{ color: token.color }}>
+                    {token.text}
+                  </span>
+                ))}
+              </span>
+            </span>
+          ))}
         </code>
       </pre>
     </figure>

@@ -1,5 +1,3 @@
-import type { CodeLanguage } from '../../content/types';
-
 export type Token = { text: string; color: string };
 
 export const TOKEN_COLOR = {
@@ -22,7 +20,7 @@ function pickColor(match: RegExpExecArray): string {
   return TOKEN_COLOR.number;
 }
 
-export function tokenize(line: string, language: CodeLanguage): Token[] {
+export function tokenize(line: string, language: string): Token[] {
   const isShell = language === 'bash' || language === 'shell';
   const re = new RegExp(isShell ? SHELL_RE : JS_RE);
   const out: Token[] = [];
@@ -55,7 +53,7 @@ export function tokenize(line: string, language: CodeLanguage): Token[] {
   return out;
 }
 
-export const LANGUAGE_LABEL: Record<CodeLanguage, string> = {
+const LANGUAGE_LABEL: Record<string, string> = {
   bash: 'Shell',
   shell: 'Shell',
   javascript: 'JavaScript',
@@ -64,3 +62,8 @@ export const LANGUAGE_LABEL: Record<CodeLanguage, string> = {
   json: 'JSON',
   text: 'Text',
 };
+
+// `code_block.language` is free text in Storyblok, so unknown values show as typed.
+export function languageLabel(language: string): string {
+  return LANGUAGE_LABEL[language] ?? language;
+}

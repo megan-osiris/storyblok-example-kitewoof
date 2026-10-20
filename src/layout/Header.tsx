@@ -1,12 +1,10 @@
-import { Link, NavLink } from 'react-router-dom';
+import { StoryblokComponent } from '@storyblok/react';
+import { Link } from 'react-router-dom';
+import type { SiteConfigBlok } from '../storyblok/types';
 
-const TOP_NAV = [
-  { label: 'Guides', to: '/docs/get-started/quickstart' },
-  { label: 'API reference', to: '/docs/reference/rest-api' },
-  { label: 'SDKs', to: '/docs/reference/node-sdk' },
-  { label: 'Changelog', to: '/docs/changelog' },
-];
+type Props = { config: SiteConfigBlok | null };
 
+// Shown when the `config` story has no logo asset uploaded.
 function BrandMark() {
   return (
     <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true">
@@ -43,30 +41,36 @@ function SearchIcon() {
   );
 }
 
-export function Header() {
+export function Header({ config }: Props) {
+  const siteName = config?.site_name ?? '';
+
   return (
     <header className="site-header">
       <div className="site-header__start">
-        <Link to="/" className="site-header__brand" aria-label="Kitewoof Docs home">
-          <BrandMark />
-          <span className="site-header__name">kitewoof</span>
+        <Link
+          to="/"
+          className="site-header__brand"
+          aria-label={`${siteName || 'Docs'} home`}
+        >
+          {config?.logo?.filename ? (
+            <img
+              src={config.logo.filename}
+              alt=""
+              width={28}
+              height={28}
+            />
+          ) : (
+            <BrandMark />
+          )}
+          <span className="site-header__name">{siteName}</span>
           <span className="site-header__divider" aria-hidden="true" />
           <span className="site-header__suffix">Docs</span>
         </Link>
         <nav className="site-header__nav" aria-label="Primary">
           <ul>
-            {TOP_NAV.map((item) => (
-              <li key={item.to}>
-                <NavLink
-                  to={item.to}
-                  className={({ isActive }) =>
-                    isActive
-                      ? 'site-header__nav-link is-active'
-                      : 'site-header__nav-link'
-                  }
-                >
-                  {item.label}
-                </NavLink>
+            {config?.header_links?.map((link) => (
+              <li key={link._uid}>
+                <StoryblokComponent blok={link} variant="header" />
               </li>
             ))}
           </ul>
@@ -85,11 +89,7 @@ export function Header() {
           <label className="visually-hidden" htmlFor="docs-search">
             Search docs
           </label>
-          <input
-            id="docs-search"
-            type="search"
-            placeholder="Search docs"
-          />
+          <input id="docs-search" type="search" placeholder="Search docs" />
           <kbd className="site-header__kbd">⌘K</kbd>
         </form>
         <div className="site-header__account">

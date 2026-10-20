@@ -1,14 +1,39 @@
-import { useParams } from 'react-router-dom';
-import { pages } from '../content/pages';
-import { DocPage } from '../components/DocPage';
+import { useLocation } from 'react-router-dom';
+import { StoryblokComponent } from '@storyblok/react';
+import { useStory } from '../storyblok/useStory';
+import type { DocPageBlok } from '../storyblok/types';
 import { NotFoundPage } from './NotFoundPage';
 
+function slugFromPathname(pathname: string): string {
+  if (pathname === '/' || pathname === '') return 'home';
+  return pathname.replace(/^\//, '').replace(/\/$/, '');
+}
+
 export function CatchAllPage() {
-  const params = useParams();
-  const path = params['*'] ?? '';
-  const page = pages[path];
+  const location = useLocation();
+  const slug = slugFromPathname(location.pathname);
+  const state = useStory<DocPageBlok>(slug);
 
-  if (!page) return <NotFoundPage path={path} />;
+  if (state.status === 'loading') {
+    return (
+      <div className="doc-page doc-page--loading" aria-busy="true">
+        Loading…
+      </div>
+    );
+  }
 
-  return <DocPage page={page} path={path} />;
+  if (state.status === 'notfound') {
+    return <NotFoundPage path={slug === 'home' ? '' : slug} />;
+  }
+
+  if (state.status === 'error') {
+    return <NotFoundPage path={slug === 'home' ? '' : slug} />;
+  }
+
+  return (
+    <StoryblokComponent
+      blok={state.story.content}
+      path={slug === 'home' ? '' : slug}
+    />
+  );
 }

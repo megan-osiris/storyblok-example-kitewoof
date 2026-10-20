@@ -1,7 +1,9 @@
-import type { CalloutSection } from '../../content/types';
-import { Inline } from './inline';
+import { StoryblokRichText, storyblokEditable } from '@storyblok/react';
+import type { JSX } from 'react';
+import type { CalloutBlok } from '../types';
+import { calloutRichText } from '../richText';
 
-type Props = { section: CalloutSection };
+type Props = { blok: CalloutBlok };
 
 function NoteIcon() {
   return (
@@ -43,23 +45,30 @@ function WarningIcon() {
   );
 }
 
-export function Callout({ section }: Props) {
-  const Icon = section.variant === 'warning' ? WarningIcon : NoteIcon;
-  const ariaLabel = section.variant === 'warning' ? 'Warning' : 'Note';
+const ARIA_LABEL = { note: 'Note', tip: 'Tip', warning: 'Warning' } as const;
+
+export function Callout({ blok }: Props): JSX.Element {
+  const isWarning = blok.variant === 'warning';
+  const Icon = isWarning ? WarningIcon : NoteIcon;
+  // The stylesheet only defines note and warning; tip uses the note styling.
+  const styleVariant = isWarning ? 'warning' : 'note';
 
   return (
     <aside
-      aria-label={ariaLabel}
-      className={`callout callout--${section.variant}`}
+      aria-label={ARIA_LABEL[blok.variant] ?? 'Note'}
+      className={`callout callout--${styleVariant}`}
+      {...storyblokEditable(blok)}
     >
       <span className="callout__icon">
         <Icon />
       </span>
       <div className="callout__body">
-        <p className="callout__title">{section.title}</p>
-        <p className="callout__content">
-          <Inline source={section.body} />
-        </p>
+        {blok.title && <p className="callout__title">{blok.title}</p>}
+        <StoryblokRichText
+          document={blok.content}
+          components={calloutRichText}
+          wrapper={false}
+        />
       </div>
     </aside>
   );
