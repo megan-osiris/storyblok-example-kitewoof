@@ -1,0 +1,31 @@
+# Netlify reads this file from the site's base directory. If the repository root
+# is above projects/docs-site, set Base directory to projects/docs-site under
+# Site configuration -> Build & deploy -> Build settings.
+#
+# Node version: Netlify reads .nvmrc from the base directory.
+#
+# Environment variables (Site configuration -> Environment variables, scope: Builds).
+# Vite copies them into the bundle at build time, so leave "Contains secret values"
+# unticked, or Netlify's secret scanning fails the build when it finds them in dist/.
+#   VITE_STORYBLOK_PUBLIC_TOKEN   required, the build fails without it
+#   VITE_STORYBLOK_REGION         eu | us | ap | ca | cn (defaults to eu)
+# Don't set VITE_STORYBLOK_PREVIEW_TOKEN here. It can read drafts.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Client-side routing: any path without a matching file gets index.html, and
+# React Router renders the page. Without this, opening /docs/core/events
+# directly returns Netlify's 404 before the app loads.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Vite fingerprints everything in assets/, so a changed file gets a new name
+# and browsers can cache these indefinitely.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
