@@ -84,6 +84,13 @@ body {
   padding: 0;
 }
 
+/* Always show the window's vertical scrollbar. Short views (the loading state,
+   the 404 page) would otherwise drop it, and the layout would shift sideways by
+   the scrollbar's width on each navigation. */
+html {
+  overflow-y: scroll;
+}
+
 body {
   font-family: var(--font-sans);
   font-size: 16px;
