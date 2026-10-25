@@ -2,6 +2,8 @@
 
 A documentation site built with React 19, Vite, React Router 7, and Storyblok as a headless CMS. The repository exists as a primer for React engineers who have not used Storyblok before. It shows the minimum set of pieces a real integration needs: a component map, a story fetch, Visual Editor live preview, rich text rendering, and token handling that keeps draft content out of production.
 
+[See Kitewoof - a Storyblok CMS powered example site](https://kitewoof.netlify.app/)
+
 ## What Storyblok does in this project
 
 Storyblok holds the content and the content schema. React holds the rendering. The two are joined by a naming contract.
